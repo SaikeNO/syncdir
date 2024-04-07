@@ -1,0 +1,1 @@
+const char *get_file_type(const char *path);

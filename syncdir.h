@@ -1,0 +1,1 @@
+void syncdir(int argc, char *argv[]);
