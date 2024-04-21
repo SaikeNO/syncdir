@@ -20,7 +20,6 @@ int scan_directory(const char *dir_path, List *list)
 
     DIR *dir;
     struct dirent *entry;
-    char src_path[PATH_MAX + 1];
 
     dir = opendir(dir_path);
     if (dir == NULL)
@@ -35,19 +34,7 @@ int scan_directory(const char *dir_path, List *list)
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
             continue;
 
-        FileState *filestate = (FileState *)malloc(sizeof(FileState));
-        snprintf(filestate->filename, PATH_MAX + 1, "%s", entry->d_name);
-
-        snprintf(src_path, PATH_MAX + 1, "%s/%s", dir_path, entry->d_name);
-        if (calculate_sha(src_path, filestate->hash) != 0)
-        {
-            perror("Failed to calculate a hash");
-            syslog(LOG_ERR, "Failed to calculate a hash for %s", src_path);
-
-            closedir(dir);
-            return -1;
-        };
-
+        FileState *filestate = create_new_file_state(entry->d_name, dir_path);
         add_to_list(list, filestate);
     }
 

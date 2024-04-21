@@ -6,42 +6,31 @@
 #include <time.h>
 #include <syslog.h>
 #include "../headers/helpers.h"
+#include "../headers/list.h"
 
 void syncdir(const char *src_dir, const char *dest_dir, List *list)
 {
   syslog(LOG_INFO, "Syncdir started");
-  DIR *src_dp, *dest_dp;
-  struct dirent *src_entry, *dest_entry;
   struct stat src_stat, dest_stat;
   char src_path[PATH_MAX + 1];
   char dest_path[PATH_MAX + 1];
-
-  src_dp = opendir(src_dir);
-  if (src_dp == NULL)
-  {
-    perror("opendir");
-    return;
-  }
-
-  dest_dp = opendir(dest_dir);
-  if (dest_dp == NULL)
-  {
-    perror("opendir");
-    closedir(src_dp);
-    return;
-  }
 
   Node *current_node = list->head;
   while (current_node != NULL)
   {
     snprintf(src_path, PATH_MAX + 1, "%s/%s", src_dir, current_node->data->filename);
+    snprintf(dest_path, PATH_MAX + 1, "%s/%s", dest_dir, current_node->data->filename);
+
     if (lstat(src_path, &src_stat) == -1)
     {
-      perror("lstat");
+      // File was removed from source directory
+      remove(dest_path);
+      syslog(LOG_INFO, "Removed %s\n", dest_path);
+      Node *node_to_remove = current_node;
+      current_node = current_node->next;
+      list = remove_from_list(list, node_to_remove->data->filename);
       continue;
     }
-
-    snprintf(dest_path, PATH_MAX + 1, "%s/%s", dest_dir, current_node->data->filename);
 
     if (lstat(dest_path, &dest_stat) == -1)
     {
@@ -63,9 +52,6 @@ void syncdir(const char *src_dir, const char *dest_dir, List *list)
 
     current_node = current_node->next;
   }
-
-  /* All done. */
-  closedir(src_dp);
-  closedir(dest_dp);
+  print_list(list);
   syslog(LOG_INFO, "Syncdir finished");
 }

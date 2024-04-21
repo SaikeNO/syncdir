@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <syslog.h>
 #include "../headers/types.h"
 
 List *create_list()
@@ -80,8 +81,8 @@ void print_list(List *list)
     Node *current_node = list->head;
     while (current_node != NULL)
     {
-        printf("%s\n", current_node->data->filename);
-        printf("%s\n", current_node->data->hash);
+        syslog(LOG_INFO, "%s\n", current_node->data->filename);
+        syslog(LOG_INFO, "%s\n", current_node->data->hash);
         current_node = current_node->next;
     }
 }

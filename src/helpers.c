@@ -60,7 +60,6 @@ void copy_file(const char *src_path, const char *dest_path)
 // Function to calculate SHA hash for a file
 int calculate_sha(const char *file_path, unsigned char *sha_result)
 {
-  syslog(LOG_INFO, "Calculating hash for %s started", file_path);
   FILE *file = fopen(file_path, "rb");
   if (!file)
   {
@@ -97,8 +96,19 @@ int calculate_sha(const char *file_path, unsigned char *sha_result)
   }
 
   fclose(file);
-  syslog(LOG_INFO, "Calculating hash for %s finished", file_path);
   return 0;
+}
+
+FileState *create_new_file_state(char *fileName, const char *dir_path)
+{
+  char src_path[PATH_MAX + 1];
+  FileState *filestate = (FileState *)malloc(sizeof(FileState));
+  snprintf(filestate->filename, PATH_MAX + 1, "%s", fileName);
+
+  snprintf(src_path, PATH_MAX + 1, "%s/%s", dir_path, fileName);
+  calculate_sha(src_path, filestate->hash);
+
+  return filestate;
 }
 
 /* Return a string that describes the type of the file system entry PATH. */

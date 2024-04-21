@@ -8,7 +8,7 @@
 typedef struct fileState
 {
     char filename[PATH_MAX + 1];
-    unsigned char hash[SHA256_DIGEST_LENGTH];
+    unsigned char hash[SHA_DIGEST_LENGTH];
 } FileState;
 
 typedef struct node
