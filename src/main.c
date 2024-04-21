@@ -13,76 +13,100 @@
 
 int main(int argc, char *argv[])
 {
-
-  /* Daemon-specific initialization goes here */
+  /* First error checking */
   if (argc < 3)
   {
     fprintf(stderr, "Usage: %s <source_dir> <dest_dir>\n", argv[0]);
     exit(EXIT_FAILURE);
   }
 
-  if (strcmp(get_file_type(argv[1]), "directory") != 0)
+  char cwd[PATH_MAX];
+  getcwd(cwd, sizeof(cwd));
+  char src_dir[PATH_MAX];
+  char dest_dir[PATH_MAX];
+  int sleep_time = (argc == 4) ? atoi(argv[3]) : 300; // Default sleep time is 5 minutes
+
+  /* Change passed directory path to absolute path */
+  if (argv[1][0] != '/')
   {
-    printf("%s is not a directory", argv[1]);
+    sprintf(src_dir, "%s/%s", cwd, argv[1]);
+  }
+  else
+  {
+    sprintf(src_dir, "%s", argv[1]);
+  }
+
+  if (argv[2][0] != '/')
+  {
+    sprintf(dest_dir, "%s/%s", cwd, argv[2]);
+  }
+  else
+  {
+    sprintf(dest_dir, "%s", argv[2]);
+  }
+
+  /* Second error checking */
+  if (strcmp(get_file_type(src_dir), "directory") != 0)
+  {
+    fprintf(stderr, "%s is not a directory", src_dir);
     exit(EXIT_FAILURE);
   }
 
-  if (strcmp(get_file_type(argv[2]), "directory") != 0)
+  if (strcmp(get_file_type(dest_dir), "directory") != 0)
   {
-    printf("%s is not a directory", argv[2]);
+    fprintf(stderr, "%s is not a directory", dest_dir);
     exit(EXIT_FAILURE);
   }
+
+  printf("Copying from %s\n", src_dir);
+  printf("to %s\n", dest_dir);
+
+  /* Open logs */
+  openlog("syncdir_daemon", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
+  syslog(LOG_INFO, "Syncdir daemon started by User %d", getuid());
+
+  pid_t pid, sid;
+  pid = fork();
+  if (pid < 0)
+  {
+    syslog(LOG_ERR, "Failed to fork process");
+    exit(EXIT_FAILURE);
+  }
+  if (pid > 0)
+  {
+    exit(EXIT_SUCCESS);
+  }
+
+  umask(0);
+
+  sid = setsid();
+  if (sid < 0)
+  {
+    syslog(LOG_ERR, "Failed to set new session");
+    exit(EXIT_FAILURE);
+  }
+
+  if ((chdir("/")) < 0)
+  {
+    syslog(LOG_ERR, "Failed to change working directory");
+    exit(EXIT_FAILURE);
+  }
+
+  close(STDIN_FILENO);
+  close(STDOUT_FILENO);
+  close(STDERR_FILENO);
 
   List *list = create_list();
-  scan_directory(argv[1], list);
-  print_list(list);
-  syncdir(argv[1], argv[2], list);
+  scan_directory(src_dir, list);
 
-  // pid_t pid, sid;
+  while (1)
+  {
+    syncdir(src_dir, dest_dir, list);
+    sleep(sleep_time);
+  }
 
-  // pid = fork();
-  // if (pid < 0)
-  // {
-  //   exit(EXIT_FAILURE);
-  // }
-  // if (pid > 0)
-  // {
-  //   exit(EXIT_SUCCESS);
-  // }
+  syslog(LOG_INFO, "Syncdir daemon stopped");
+  closelog();
 
-  // umask(0);
-
-  // /* Open any logs here */
-  // openlog("mojelogidodemona", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
-  // syslog(LOG_INFO, "Program started by User %d", getuid());
-
-  // /* Create a new SID for the child process */
-  // sid = setsid();
-  // if (sid < 0)
-  // {
-  //   syslog(LOG_INFO, "Program failed");
-  //   exit(EXIT_FAILURE);
-  // }
-
-  // if ((chdir("/")) < 0)
-  // {
-  //   syslog(LOG_INFO, "Program failed");
-  //   exit(EXIT_FAILURE);
-  // }
-
-  // close(STDIN_FILENO);
-  // close(STDOUT_FILENO);
-  // close(STDERR_FILENO);
-
-  // /* The Big Loop */
-  // while (1)
-  // {
-  //   /* Do some task here ... */
-  //   syncdir(list, argv[2]);
-
-  //   sleep(10); /* wait 10 seconds */
-  // }
-
-  syslog(LOG_INFO, "Program stopped");
   exit(EXIT_SUCCESS);
 }

@@ -20,7 +20,7 @@ void add_to_list(List *list, FileState *data)
     list->size++;
 }
 
-void *remove_from_list(List *list, const char *filename)
+List *remove_from_list(List *list, const char *filename)
 {
     if (list->size == 0)
     {
@@ -40,6 +40,27 @@ void *remove_from_list(List *list, const char *filename)
         free(q);
     }
     return list;
+}
+
+Node *find_from_list(List *list, const char *filename)
+{
+    if (list->size == 0)
+    {
+        return NULL;
+    }
+    Node *p = list->head;
+    Node *q = list->head->next;
+    while (strcmp(q->data->filename, filename) != 0 && q->next != NULL)
+    {
+        p = p->next;
+        q = q->next;
+    }
+
+    if (strcmp(q->data->filename, filename) == 0)
+    {
+        return q;
+    }
+    return NULL;
 }
 
 void free_list(List *list)

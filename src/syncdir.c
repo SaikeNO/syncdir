@@ -4,10 +4,12 @@
 #include <linux/limits.h>
 #include <sys/stat.h>
 #include <time.h>
+#include <syslog.h>
 #include "../headers/helpers.h"
 
 void syncdir(const char *src_dir, const char *dest_dir, List *list)
 {
+  syslog(LOG_INFO, "Syncdir started");
   DIR *src_dp, *dest_dp;
   struct dirent *src_entry, *dest_entry;
   struct stat src_stat, dest_stat;
@@ -45,7 +47,7 @@ void syncdir(const char *src_dir, const char *dest_dir, List *list)
     {
       // File doesn't exist in destination directory, copy it
       copy_file(src_path, dest_path);
-      printf("Copied %s to %s\n", src_path, dest_path);
+      syslog(LOG_INFO, "Copied %s to %s\n", src_path, dest_path);
     }
     else
     {
@@ -55,7 +57,7 @@ void syncdir(const char *src_dir, const char *dest_dir, List *list)
       {
         copy_file(src_path, dest_path);
         strcpy(current_node->data->hash, sha_result);
-        printf("Updated %s to %s\n", src_path, dest_path);
+        syslog(LOG_INFO, "Updated %s to %s\n", src_path, dest_path);
       }
     }
 
@@ -65,4 +67,5 @@ void syncdir(const char *src_dir, const char *dest_dir, List *list)
   /* All done. */
   closedir(src_dp);
   closedir(dest_dp);
+  syslog(LOG_INFO, "Syncdir finished");
 }

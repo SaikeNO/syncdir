@@ -10,6 +10,7 @@
 #include <string.h>
 #include <time.h>
 #include <openssl/sha.h>
+#include <syslog.h>
 #include "../headers/list.h"
 
 #define BUF_SIZE 1024
@@ -59,6 +60,7 @@ void copy_file(const char *src_path, const char *dest_path)
 // Function to calculate SHA hash for a file
 int calculate_sha(const char *file_path, unsigned char *sha_result)
 {
+  syslog(LOG_INFO, "Calculating hash for %s started", file_path);
   FILE *file = fopen(file_path, "rb");
   if (!file)
   {
@@ -95,6 +97,7 @@ int calculate_sha(const char *file_path, unsigned char *sha_result)
   }
 
   fclose(file);
+  syslog(LOG_INFO, "Calculating hash for %s finished", file_path);
   return 0;
 }
 
