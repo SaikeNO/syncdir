@@ -4,7 +4,7 @@
 #include <linux/limits.h>
 #include <sys/stat.h>
 #include <time.h>
-#include "helpers.h"
+#include "../headers/helpers.h"
 
 void syncdir(const char *src_dir, const char *dest_dir, List *list)
 {

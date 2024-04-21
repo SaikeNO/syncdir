@@ -10,7 +10,7 @@
 #include <string.h>
 #include <time.h>
 #include <openssl/sha.h>
-#include "list.h"
+#include "../headers/list.h"
 
 #define BUF_SIZE 1024
 

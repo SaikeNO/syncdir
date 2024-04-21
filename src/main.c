@@ -6,10 +6,10 @@
 #include <errno.h>
 #include <syslog.h>
 #include <string.h>
-#include "syncdir.h"
-#include "scan_directory.h"
-#include "helpers.h"
-#include "list.h"
+#include "../headers/syncdir.h"
+#include "../headers/scan_directory.h"
+#include "../headers/helpers.h"
+#include "../headers/list.h"
 
 int main(int argc, char *argv[])
 {

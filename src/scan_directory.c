@@ -10,8 +10,8 @@
 #include <string.h>
 #include <time.h>
 #include <openssl/sha.h>
-#include "list.h"
-#include "helpers.h"
+#include "../headers/list.h"
+#include "../headers/helpers.h"
 
 int scan_directory(const char *dir_path, List *list)
 {

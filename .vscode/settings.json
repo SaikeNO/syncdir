@@ -15,6 +15,11 @@
         "list": "c",
         "sha.h": "c",
         "time.h": "c",
-        "scan_directory.h": "c"
+        "scan_directory.h": "c",
+        "helpers.h": "c",
+        "list.h": "c",
+        "syncdir.h": "c",
+        "types.h": "c",
+        "string.h": "c"
     }
 }

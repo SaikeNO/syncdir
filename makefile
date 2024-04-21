@@ -1,8 +1,21 @@
-OBJ = main.o helpers.o syncdir.o list.o scan_directory.o
+OBJ_DIR = obj
+SRC_DIR = src
+INC_DIR = headers
+SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
+OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
+
 all: deamon
-deamon: $(OBJ)
-	gcc $(OBJ) -o deamon -lssl -lcrypto
-$(OBJ): types.h helpers.h syncdir.h list.h scan_directory.h
+
+deamon: $(OBJ_FILES)
+	gcc $(OBJ_FILES) -o deamon -lssl -lcrypto
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	gcc -c $< -o $@
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
 .PHONY: clean
+
 clean:
-	rm -f *.o deamon
+	rm -rf $(OBJ_DIR) deamon
