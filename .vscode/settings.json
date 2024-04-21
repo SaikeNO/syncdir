@@ -1,0 +1,20 @@
+{
+    "files.associations": {
+        "cstdlib": "c",
+        "stdio.h": "c",
+        "stat.h": "c",
+        "limits.h": "c",
+        "optional": "c",
+        "system_error": "c",
+        "array": "c",
+        "functional": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "string_view": "c",
+        "list": "c",
+        "sha.h": "c",
+        "time.h": "c",
+        "scan_directory.h": "c"
+    }
+}
