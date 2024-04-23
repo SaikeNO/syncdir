@@ -23,6 +23,9 @@
         "string.h": "c",
         "fcntl.h": "c",
         "dirent.h": "c",
-        "string": "c"
+        "string": "c",
+        "calculate_sha.h": "c",
+        "signal.h": "c",
+        "copy_file.h": "c"
     }
 }

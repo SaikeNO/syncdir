@@ -6,7 +6,7 @@
 #include <errno.h>
 #include <syslog.h>
 #include <string.h>
-#include <signal.h> // Dodane dla obsługi sygnałów
+#include <signal.h>
 #include "../headers/syncdir.h"
 #include "../headers/scan_directory.h"
 #include "../headers/helpers.h"

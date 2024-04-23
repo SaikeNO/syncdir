@@ -3,8 +3,6 @@
 #include <string.h>
 #include <errno.h>
 #include <dirent.h>
-#include <sys/stat.h>
-#include <openssl/sha.h>
 #include <syslog.h>
 #include "../headers/list.h"
 #include "../headers/helpers.h"

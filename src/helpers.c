@@ -1,16 +1,6 @@
-#include <assert.h>
-#include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
-#include <dirent.h>
-#include <string.h>
-#include <time.h>
-#include <openssl/sha.h>
-#include <syslog.h>
 #include "../headers/list.h"
 #include "../headers/calculate_sha.h"
 
