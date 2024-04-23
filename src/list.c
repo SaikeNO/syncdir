@@ -21,46 +21,53 @@ void add_to_list(List *list, FileState *data)
     list->size++;
 }
 
-List *remove_from_list(List *list, const char *filename)
+void remove_from_list(List *list, const char *filename)
 {
     if (list->size == 0)
     {
-        return NULL;
-    }
-    Node *p = list->head;
-    Node *q = list->head->next;
-    while (strcmp(q->data->filename, filename) != 0 && q->next != NULL)
-    {
-        p = p->next;
-        q = q->next;
+        return;
     }
 
-    if (strcmp(q->data->filename, filename) == 0)
+    Node *p = list->head;
+    Node *prev = NULL;
+
+    if (strcmp(p->data->filename, filename) == 0)
     {
-        p->next = q->next;
-        free(q);
+        list->head = p->next;
+        free(p->data);
+        free(p);
+        list->size--;
+        return;
     }
-    return list;
+
+    while (p != NULL && strcmp(p->data->filename, filename) != 0)
+    {
+        prev = p;
+        p = p->next;
+    }
+
+    if (p != NULL)
+    {
+        prev->next = p->next;
+        free(p->data);
+        free(p);
+        list->size--;
+    }
 }
 
-Node *find_from_list(List *list, const char *filename)
+FileState *find_from_list(List *list, const char *filename)
 {
-    if (list->size == 0)
-    {
-        return NULL;
-    }
     Node *p = list->head;
-    Node *q = list->head->next;
-    while (strcmp(q->data->filename, filename) != 0 && q->next != NULL)
+
+    while (p != NULL)
     {
+        if (strcmp(p->data->filename, filename) == 0)
+        {
+            return p->data;
+        }
         p = p->next;
-        q = q->next;
     }
 
-    if (strcmp(q->data->filename, filename) == 0)
-    {
-        return q;
-    }
     return NULL;
 }
 
@@ -82,7 +89,7 @@ void print_list(List *list)
     while (current_node != NULL)
     {
         syslog(LOG_INFO, "%s\n", current_node->data->filename);
-        syslog(LOG_INFO, "%s\n", current_node->data->hash);
+        // syslog(LOG_INFO, "%s\n", current_node->data->hash);
         current_node = current_node->next;
     }
 }

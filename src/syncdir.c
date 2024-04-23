@@ -25,10 +25,10 @@ void syncdir(const char *src_dir, const char *dest_dir, List *list)
     {
       // File was removed from source directory
       remove(dest_path);
-      syslog(LOG_INFO, "Removed %s\n", dest_path);
       Node *node_to_remove = current_node;
       current_node = current_node->next;
-      list = remove_from_list(list, node_to_remove->data->filename);
+      remove_from_list(list, node_to_remove->data->filename);
+      syslog(LOG_INFO, "Removed %s\n", dest_path);
       continue;
     }
 

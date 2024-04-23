@@ -22,6 +22,7 @@
         "types.h": "c",
         "string.h": "c",
         "fcntl.h": "c",
-        "dirent.h": "c"
+        "dirent.h": "c",
+        "string": "c"
     }
 }

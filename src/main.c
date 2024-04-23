@@ -97,10 +97,10 @@ int main(int argc, char *argv[])
   close(STDERR_FILENO);
 
   List *list = create_list();
-  scan_directory(src_dir, list);
 
   while (1)
   {
+    scan_directory(src_dir, list);
     syncdir(src_dir, dest_dir, list);
     sleep(sleep_time);
   }

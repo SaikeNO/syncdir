@@ -34,8 +34,13 @@ int scan_directory(const char *dir_path, List *list)
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
             continue;
 
-        FileState *filestate = create_new_file_state(entry->d_name, dir_path);
-        add_to_list(list, filestate);
+        // FileState *filestate = create_new_file_state(entry->d_name, dir_path);
+        FileState *filestate = find_from_list(list, entry->d_name);
+        if (filestate == NULL)
+        {
+            filestate = create_new_file_state(entry->d_name, dir_path);
+            add_to_list(list, filestate);
+        }
     }
 
     closedir(dir);
