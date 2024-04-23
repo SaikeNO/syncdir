@@ -6,10 +6,18 @@
 #include <errno.h>
 #include <syslog.h>
 #include <string.h>
+#include <signal.h> // Dodane dla obsługi sygnałów
 #include "../headers/syncdir.h"
 #include "../headers/scan_directory.h"
 #include "../headers/helpers.h"
 #include "../headers/list.h"
+
+volatile sig_atomic_t wakeup_flag = 0;
+
+void handle_sigusr1(int signum)
+{
+  wakeup_flag = 1;
+}
 
 int main(int argc, char *argv[])
 {
@@ -97,6 +105,8 @@ int main(int argc, char *argv[])
   close(STDOUT_FILENO);
   close(STDERR_FILENO);
 
+  signal(SIGUSR1, handle_sigusr1);
+
   List *list = create_list();
   if (list == NULL)
   {
@@ -106,6 +116,12 @@ int main(int argc, char *argv[])
 
   while (1)
   {
+    if (wakeup_flag)
+    {
+      wakeup_flag = 0;
+      syslog(LOG_INFO, "Received SIGUSR1 signal, waking up daemon...");
+    }
+
     if (scan_directory(src_dir, list) == -1)
     {
       syslog(LOG_ERR, "Failed to scan directory");
