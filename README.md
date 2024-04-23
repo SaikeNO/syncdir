@@ -17,7 +17,7 @@ Daemon synchronizacji plików jest narzędziem przeznaczonym do synchronizowania
 
 Aby uruchomić demona, należy użyć poniższej komendy:
 ```bash
-./syncdir_daemon <source_dir> <dest_dir> [sleep_time] [threshold]
+./deamon <source_dir> <dest_dir> [sleep_time] [threshold]
 ```
 - `<source_dir>`: Ścieżka do katalogu źródłowego.
 - `<dest_dir>`: Ścieżka do katalogu docelowego.
@@ -34,7 +34,7 @@ Gdzie `<pid>` to identyfikator procesu demona.
 
 ## Przykład
 ```bash
-./syncdir_daemon /home/user/source /home/user/destination 300 1048576
+./deamon /home/user/source /home/user/destination 300 1048576
 ```
 
 Uruchomi demona monitorującego katalog `/home/user/source`, który synchronizuje zmiany z katalogiem `/home/user/destination` co 300 sekund. Pliki o rozmiarze powyżej 1 MB będą traktowane jako duże i kopiowane za pomocą bardziej efektywnych metod.
