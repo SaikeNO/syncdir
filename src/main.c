@@ -24,7 +24,8 @@ int main(int argc, char *argv[])
   getcwd(cwd, sizeof(cwd));
   char src_dir[PATH_MAX];
   char dest_dir[PATH_MAX];
-  int sleep_time = (argc == 4) ? atoi(argv[3]) : 300; // Default sleep time is 5 minutes
+  int sleep_time = (argc >= 4) ? atoi(argv[3]) : 300;     // Default sleep time is 5 minutes
+  size_t threshold = argc == 5 ? atoi(argv[4]) : 1048576; // Default threshold is 1 MB
 
   /* Change passed directory path to absolute path */
   if (argv[1][0] != '/')
@@ -110,7 +111,7 @@ int main(int argc, char *argv[])
       syslog(LOG_ERR, "Failed to scan directory");
       exit(EXIT_FAILURE);
     }
-    syncdir(src_dir, dest_dir, list);
+    syncdir(src_dir, dest_dir, list, threshold);
     sleep(sleep_time);
   }
 

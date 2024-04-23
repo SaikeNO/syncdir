@@ -10,7 +10,7 @@
 #include "../headers/copy_file.h"
 #include "../headers/calculate_sha.h"
 
-void syncdir(const char *src_dir, const char *dest_dir, List *list)
+void syncdir(const char *src_dir, const char *dest_dir, List *list, size_t threshold)
 {
   syslog(LOG_INFO, "Syncdir started");
   struct stat src_stat, dest_stat;
@@ -37,7 +37,7 @@ void syncdir(const char *src_dir, const char *dest_dir, List *list)
     if (lstat(dest_path, &dest_stat) == -1)
     {
       // File doesn't exist in destination directory, copy it
-      copy_file(src_path, dest_path);
+      copy_file(src_path, dest_path, threshold);
       syslog(LOG_INFO, "Copied %s to %s\n", src_path, dest_path);
     }
     else
@@ -51,7 +51,7 @@ void syncdir(const char *src_dir, const char *dest_dir, List *list)
 
       if (memcmp(current_node->data->hash, sha_result, SHA_DIGEST_LENGTH) != 0)
       {
-        copy_file(src_path, dest_path);
+        copy_file(src_path, dest_path, threshold);
         memcpy(current_node->data->hash, sha_result, SHA_DIGEST_LENGTH);
         syslog(LOG_INFO, "Updated %s to %s\n", src_path, dest_path);
       }
@@ -59,6 +59,5 @@ void syncdir(const char *src_dir, const char *dest_dir, List *list)
 
     current_node = current_node->next;
   }
-  print_list(list);
   syslog(LOG_INFO, "Syncdir finished");
 }

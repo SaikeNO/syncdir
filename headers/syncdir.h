@@ -3,6 +3,6 @@
 
 #include "types.h"
 
-void syncdir(const char *src_dir, const char *dest_dir, List *list);
+void syncdir(const char *src_dir, const char *dest_dir, List *list, size_t threshold);
 
 #endif /* SYNCDIR_H */
