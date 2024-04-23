@@ -1,18 +1,14 @@
-#include <assert.h>
-#include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <dirent.h>
 #include <string.h>
-#include <time.h>
+#include <errno.h>
+#include <dirent.h>
+#include <sys/stat.h>
 #include <openssl/sha.h>
 #include <syslog.h>
 #include "../headers/list.h"
 #include "../headers/helpers.h"
+#include "../headers/copy_file.h"
 
 int scan_directory(const char *dir_path, List *list)
 {
@@ -34,11 +30,15 @@ int scan_directory(const char *dir_path, List *list)
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
             continue;
 
-        // FileState *filestate = create_new_file_state(entry->d_name, dir_path);
         FileState *filestate = find_from_list(list, entry->d_name);
         if (filestate == NULL)
         {
             filestate = create_new_file_state(entry->d_name, dir_path);
+            if (filestate == NULL)
+            {
+                closedir(dir);
+                return -1;
+            }
             add_to_list(list, filestate);
         }
     }

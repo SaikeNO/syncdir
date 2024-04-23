@@ -1,25 +1,26 @@
+#ifndef TYPES_H
+#define TYPES_H
 
-#ifndef TYPES
-#define TYPES
-
-#include <linux/limits.h>
 #include <openssl/sha.h>
 
-typedef struct fileState
+#define PATH_MAX 4096
+
+typedef struct FileState
 {
     char filename[PATH_MAX + 1];
     unsigned char hash[SHA_DIGEST_LENGTH];
 } FileState;
 
-typedef struct node
+typedef struct Node
 {
     FileState *data;
-    struct node *next;
+    struct Node *next;
 } Node;
 
-typedef struct list
+typedef struct List
 {
     int size;
     Node *head;
 } List;
-#endif
+
+#endif /* TYPES_H */

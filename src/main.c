@@ -97,10 +97,19 @@ int main(int argc, char *argv[])
   close(STDERR_FILENO);
 
   List *list = create_list();
+  if (list == NULL)
+  {
+    syslog(LOG_ERR, "Failed to create list");
+    exit(EXIT_FAILURE);
+  }
 
   while (1)
   {
-    scan_directory(src_dir, list);
+    if (scan_directory(src_dir, list) == -1)
+    {
+      syslog(LOG_ERR, "Failed to scan directory");
+      exit(EXIT_FAILURE);
+    }
     syncdir(src_dir, dest_dir, list);
     sleep(sleep_time);
   }

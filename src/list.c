@@ -7,6 +7,12 @@
 List *create_list()
 {
     List *new_list = (List *)malloc(sizeof(List));
+    if (new_list == NULL)
+    {
+        perror("malloc");
+        return NULL;
+    }
+
     new_list->size = 0;
     new_list->head = NULL;
     return new_list;
@@ -14,7 +20,19 @@ List *create_list()
 
 void add_to_list(List *list, FileState *data)
 {
+    if (list == NULL)
+    {
+        syslog(LOG_ERR, "List is NULL");
+        return;
+    }
+
     Node *new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL)
+    {
+        perror("malloc");
+        return;
+    }
+
     new_node->data = data;
     new_node->next = list->head;
     list->head = new_node;
@@ -23,8 +41,9 @@ void add_to_list(List *list, FileState *data)
 
 void remove_from_list(List *list, const char *filename)
 {
-    if (list->size == 0)
+    if (list == NULL || list->size == 0)
     {
+        syslog(LOG_ERR, "List is NULL or empty");
         return;
     }
 
@@ -57,6 +76,12 @@ void remove_from_list(List *list, const char *filename)
 
 FileState *find_from_list(List *list, const char *filename)
 {
+    if (list == NULL)
+    {
+        syslog(LOG_ERR, "List is NULL");
+        return NULL;
+    }
+
     Node *p = list->head;
 
     while (p != NULL)
@@ -73,6 +98,12 @@ FileState *find_from_list(List *list, const char *filename)
 
 void free_list(List *list)
 {
+    if (list == NULL)
+    {
+        syslog(LOG_ERR, "List is NULL");
+        return;
+    }
+
     Node *current_node = list->head;
     while (current_node != NULL)
     {
@@ -85,11 +116,22 @@ void free_list(List *list)
 
 void print_list(List *list)
 {
+    if (list == NULL)
+    {
+        syslog(LOG_ERR, "List is NULL");
+        return;
+    }
+
     Node *current_node = list->head;
     while (current_node != NULL)
     {
+        if (current_node->data == NULL)
+        {
+            syslog(LOG_ERR, "Data in list node is NULL");
+            return;
+        }
+
         syslog(LOG_INFO, "%s\n", current_node->data->filename);
-        // syslog(LOG_INFO, "%s\n", current_node->data->hash);
         current_node = current_node->next;
     }
 }

@@ -1,5 +1,5 @@
-#ifndef LIST
-#define LIST
+#ifndef LIST_H
+#define LIST_H
 
 #include "types.h"
 
@@ -9,4 +9,5 @@ void remove_from_list(List *list, const char *filename);
 FileState *find_from_list(List *list, const char *filename);
 void free_list(List *list);
 void print_list(List *list);
-#endif
+
+#endif /* LIST_H */

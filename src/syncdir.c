@@ -1,12 +1,14 @@
-#include <dirent.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <linux/limits.h>
+#include <errno.h>
 #include <sys/stat.h>
-#include <time.h>
+#include <openssl/sha.h>
 #include <syslog.h>
-#include "../headers/helpers.h"
 #include "../headers/list.h"
+#include "../headers/helpers.h"
+#include "../headers/copy_file.h"
+#include "../headers/calculate_sha.h"
 
 void syncdir(const char *src_dir, const char *dest_dir, List *list)
 {
@@ -41,11 +43,16 @@ void syncdir(const char *src_dir, const char *dest_dir, List *list)
     else
     {
       unsigned char sha_result[SHA_DIGEST_LENGTH];
-      calculate_sha(src_path, sha_result);
+      if (calculate_sha(src_path, sha_result) == -1)
+      {
+        current_node = current_node->next;
+        continue;
+      }
+
       if (memcmp(current_node->data->hash, sha_result, SHA_DIGEST_LENGTH) != 0)
       {
         copy_file(src_path, dest_path);
-        strcpy(current_node->data->hash, sha_result);
+        memcpy(current_node->data->hash, sha_result, SHA_DIGEST_LENGTH);
         syslog(LOG_INFO, "Updated %s to %s\n", src_path, dest_path);
       }
     }
