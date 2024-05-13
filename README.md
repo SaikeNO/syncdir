@@ -3,9 +3,10 @@
 Daemon synchronizacji plików jest narzędziem przeznaczonym do synchronizowania plików między dwoma katalogami. Działa jako proces demoniczny w tle, okresowo skanując katalog źródłowy i kopiując nowe lub zmodyfikowane pliki do katalogu docelowego. Do porównywania ze sobą plików program wykorzystuje obliczanie sumy kontrolnej przy użyciu algorytmu SHA-1.
 
 ## Funkcje
+- Porównywanie ze sobą plików z wykorzystaniem sumy kontrolnej przy użyciu algorytmu SHA-1.
+- Możliwość ustawienia progu rozróżniającego małe i duże pliki, z różnymi mechanizmami kopiowania dla efektywności.
 - Monitorowanie katalogu źródłowego w poszukiwaniu zmian i synchronizacja plików do katalogu docelowego.
 - Obsługa opcjonalnego parametru czasu uśpienia, umożliwiającego kontrolowanie interwału między cyklami synchronizacji.
-- Możliwość ustawienia progu rozróżniającego małe i duże pliki, z różnymi mechanizmami kopiowania dla efektywności.
 - Możliwość natychmiastowego obudzenia demona poprzez wysłanie sygnału SIGUSR1 do procesu demona.
 
 ## Wymagania wstępne
