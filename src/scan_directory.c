@@ -25,7 +25,12 @@ int scan_directory(const char *dir_path, List *list)
 
     while ((entry = readdir(dir)) != NULL)
     {
-        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+        char absolutePath[PATH_MAX];
+        sprintf(absolutePath, "%s/%s", dir_path, entry->d_name);
+        if (strcmp(absolutePath, ".") == 0 ||
+            strcmp(absolutePath, "..") == 0 ||
+            get_file_type(absolutePath) == NULL ||
+            strcmp(get_file_type(absolutePath), "regular file") != 0)
             continue;
 
         FileState *filestate = find_from_list(list, entry->d_name);
